@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StudyMate AI — Your Personal Study Tutor</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f4ef;
+  --surface:#ffffff;
+  --card:#fffdf9;
+  --border:#e8e2d9;
+  --accent:#2d6a4f;
+  --accent2:#e76f51;
+  --accent3:#457b9d;
+  --text:#1a1a2e;
+  --muted:#7a7065;
+  --light:#f0ebe3;
+  --radius:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(247,244,239,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Fraunces',serif;font-weight:900;font-size:1.4rem;color:var(--accent);letter-spacing:-0.5px}
+.logo span{color:var(--accent2)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.88rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent)}
+.btn-cta{background:var(--accent);color:#fff;border:none;padding:0.55rem 1.3rem;border-radius:50px;font-weight:600;font-size:0.88rem;cursor:pointer;transition:background 0.2s,transform 0.15s}
+.btn-cta:hover{background:#1b4332;transform:translateY(-1px)}
+
+/* ── LANDING ── */
+#landing{display:block}
+#app-view{display:none}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(45,106,79,0.07) 0%,transparent 70%);pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;pointer-events:none}
+.blob1{width:500px;height:500px;background:var(--accent);top:-100px;left:-150px}
+.blob2{width:400px;height:400px;background:var(--accent2);bottom:-50px;right:-100px}
+.hero-badge{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(45,106,79,0.1);border:1px solid rgba(45,106,79,0.25);color:var(--accent);font-size:0.78rem;font-weight:600;padding:0.35rem 1rem;border-radius:50px;margin-bottom:2rem;animation:fadeUp 0.6s ease both}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;animation:fadeUp 0.7s 0.1s ease both}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{font-size:1.1rem;color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:2.5rem;animation:fadeUp 0.7s 0.2s ease both}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.7s 0.3s ease both}
+.btn-primary{background:var(--accent);color:#fff;padding:0.9rem 2.2rem;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;border:none;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 24px rgba(45,106,79,0.25)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(45,106,79,0.35)}
+.btn-outline{background:transparent;color:var(--text);padding:0.9rem 2.2rem;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:1rem;cursor:pointer;border:2px solid var(--border);transition:border-color 0.2s,color 0.2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.subjects{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-top:3rem;animation:fadeUp 0.7s 0.4s ease both}
+.subject-pill{background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:0.4rem 1rem;font-size:0.8rem;color:var(--muted);font-weight:500}
+
+/* FEATURES */
+.features{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+.section-eyebrow{font-size:0.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem}
+.section-title{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:3rem;line-height:1.1}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s}
+.feat-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.08);border-color:rgba(45,106,79,0.25)}
+.feat-icon{font-size:2rem;margin-bottom:1rem}
+.feat-card h3{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;margin-bottom:0.5rem}
+.feat-card p{color:var(--muted);font-size:0.88rem;line-height:1.65}
+
+/* CTA BAND */
+.cta-band{background:var(--accent);color:#fff;text-align:center;padding:5rem 2rem;margin:0 2rem 4rem;border-radius:24px}
+.cta-band h2{font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:1rem}
+.cta-band p{opacity:0.8;margin-bottom:2rem;font-size:1rem}
+.btn-white{background:#fff;color:var(--accent);padding:0.9rem 2.2rem;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;border:none;transition:transform 0.2s}
+.btn-white:hover{transform:scale(1.05)}
+
+/* ── APP SHELL ── */
+.app-shell{display:flex;min-height:100vh;padding-top:64px}
+.sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 1rem;position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:100}
+.sidebar-label{font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 0.75rem;margin:1rem 0 0.5rem}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.75rem;border-radius:10px;cursor:pointer;font-size:0.9rem;font-weight:500;color:var(--muted);transition:background 0.2s,color 0.2s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--light);color:var(--text)}
+.nav-item.active{background:rgba(45,106,79,0.1);color:var(--accent);font-weight:600}
+.nav-item .icon{font-size:1.1rem;width:22px;text-align:center}
+.main-content{flex:1;margin-left:240px;padding:2rem;max-width:900px}
+
+/* PANELS */
+.panel{display:none;animation:fadeUp 0.3s ease}
+.panel.active{display:block}
+
+/* ── CHAT ── */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 160px)}
+.chat-messages{flex:1;overflow-y:auto;padding:1rem 0;display:flex;flex-direction:column;gap:1rem}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.msg{display:flex;gap:0.75rem;max-width:80%}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700}
+.msg.ai .msg-avatar{background:rgba(45,106,79,0.1);color:var(--accent)}
+.msg.user .msg-avatar{background:var(--accent2);color:#fff}
+.msg-bubble{padding:0.8rem 1.1rem;border-radius:16px;font-size:0.92rem;line-height:1.6}
+.msg.ai .msg-bubble{background:var(--surface);border:1px solid var(--border);border-radius:4px 16px 16px 16px}
+.msg.user .msg-bubble{background:var(--accent);color:#fff;border-radius:16px 4px 16px 16px}
+.chat-input-row{display:flex;gap:0.75rem;padding:1rem 0 0;border-top:1px solid var(--border)}
+.chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;color:var(--text);outline:none;resize:none;transition:border-color 0.2s}
+.chat-input:focus{border-color:var(--accent)}
+.send-btn{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:0 1.2rem;cursor:pointer;font-size:1.2rem;transition:background 0.2s}
+.send-btn:hover{background:#1b4332}
+.typing{display:flex;gap:4px;align-items:center;padding:0.8rem 1rem}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* ── NOTES / PDF ── */
+.panel-header{margin-bottom:1.5rem}
+.panel-header h2{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:0.25rem}
+.panel-header p{color:var(--muted);font-size:0.9rem}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:2.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:var(--surface)}
+.upload-zone:hover{border-color:var(--accent);background:rgba(45,106,79,0.03)}
+.upload-zone .uz-icon{font-size:2.5rem;margin-bottom:0.75rem}
+.upload-zone p{color:var(--muted);font-size:0.9rem}
+.upload-zone strong{color:var(--accent)}
+.notes-textarea{width:100%;min-height:180px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;color:var(--text);outline:none;resize:vertical;margin:1rem 0;transition:border-color 0.2s}
+.notes-textarea:focus{border-color:var(--accent)}
+.action-row{display:flex;gap:0.75rem;flex-wrap:wrap}
+.btn-action{padding:0.7rem 1.4rem;border-radius:50px;font-weight:600;font-size:0.88rem;cursor:pointer;transition:all 0.2s;border:none}
+.btn-green{background:var(--accent);color:#fff}
+.btn-green:hover{background:#1b4332}
+.btn-orange{background:var(--accent2);color:#fff}
+.btn-orange:hover{background:#c1440e}
+.btn-blue{background:var(--accent3);color:#fff}
+.btn-blue:hover{background:#2a5f7f}
+.result-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-top:1.5rem;line-height:1.75;font-size:0.92rem}
+.result-box h4{font-family:'Fraunces',serif;font-weight:700;margin-bottom:0.75rem;color:var(--accent)}
+
+/* ── QUIZ ── */
+.quiz-topic-row{display:flex;gap:0.75rem;margin-bottom:1.5rem}
+.topic-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.8rem 1rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;color:var(--text);outline:none;transition:border-color 0.2s}
+.topic-input:focus{border-color:var(--accent)}
+.quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1rem}
+.quiz-q{font-weight:600;margin-bottom:1rem;font-size:0.95rem;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:0.6rem}
+.quiz-opt{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:0.9rem;background:var(--bg)}
+.quiz-opt:hover{border-color:var(--accent);background:rgba(45,106,79,0.05)}
+.quiz-opt.correct{border-color:#2d6a4f;background:rgba(45,106,79,0.1);color:var(--accent)}
+.quiz-opt.wrong{border-color:#e76f51;background:rgba(231,111,81,0.1);color:#c1440e}
+.quiz-opt-letter{width:28px;height:28px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;flex-shrink:0}
+
+/* ── FLASHCARDS ── */
+.flashcard-area{perspective:1000px;max-width:500px;margin:0 auto 2rem}
+.flashcard{width:100%;height:220px;position:relative;transform-style:preserve-3d;transition:transform 0.6s;cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;border:2px solid var(--border)}
+.fc-front{background:var(--surface)}
+.fc-back{background:var(--accent);color:#fff;transform:rotateY(180deg)}
+.fc-front p,.fc-back p{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;line-height:1.4}
+.fc-hint{text-align:center;color:var(--muted);font-size:0.8rem;margin-bottom:1.5rem}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:1.5rem}
+.fc-nav button{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.1rem;transition:all 0.2s}
+.fc-nav button:hover{border-color:var(--accent);color:var(--accent)}
+.fc-count{font-size:0.88rem;color:var(--muted)}
+
+/* ── PLANNER ── */
+.planner-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem;margin-bottom:2rem}
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 0.75rem;text-align:center}
+.day-name{font-size:0.7rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem}
+.day-num{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:800;margin-bottom:0.5rem}
+.day-card.today{border-color:var(--accent);background:rgba(45,106,79,0.06)}
+.day-card.today .day-num{color:var(--accent)}
+.day-task{font-size:0.7rem;background:rgba(45,106,79,0.1);color:var(--accent);border-radius:4px;padding:0.2rem 0.4rem;margin-bottom:0.2rem;text-align:left}
+.planner-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.planner-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
+.planner-item:last-child{border-bottom:none}
+.planner-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.planner-item p{flex:1;font-size:0.92rem;font-weight:500}
+.planner-item span{font-size:0.8rem;color:var(--muted)}
+.planner-item .done-check{color:var(--accent);font-size:1rem}
+
+/* ── PROGRESS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center}
+.stat-num{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;color:var(--accent)}
+.stat-label{font-size:0.82rem;color:var(--muted);margin-top:0.25rem}
+.streak-bar{display:flex;gap:0.4rem;margin-bottom:2rem;flex-wrap:wrap}
+.streak-day{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700}
+.streak-day.done{background:var(--accent);color:#fff}
+.streak-day.missed{background:var(--light);color:var(--muted)}
+.streak-day.today{background:var(--accent2);color:#fff}
+.progress-bar-wrap{margin-bottom:1rem}
+.progress-bar-wrap label{font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;margin-bottom:0.4rem}
+.progress-bar-wrap label span{color:var(--muted);font-weight:400}
+.pbar{height:10px;background:var(--light);border-radius:50px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:50px;background:var(--accent);transition:width 1s ease}
+
+/* LOADING */
+.loading{display:flex;align-items:center;gap:0.5rem;color:var(--muted);font-size:0.88rem;padding:0.5rem 0}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* UTILS */
+.page-title{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:0.25rem}
+.page-sub{color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem}
+.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+.badge{display:inline-block;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.75rem;font-weight:600}
+.badge-green{background:rgba(45,106,79,0.1);color:var(--accent)}
+.badge-orange{background:rgba(231,111,81,0.1);color:var(--accent2)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{width:100%;height:auto;position:fixed;top:64px;bottom:auto;left:0;right:0;display:flex;flex-direction:row;overflow-x:auto;padding:0.5rem;border-right:none;border-bottom:1px solid var(--border)}
+  .sidebar-label{display:none}
+  .nav-item{white-space:nowrap;padding:0.5rem 0.75rem}
+  .main-content{margin-left:0;margin-top:56px;padding:1.25rem}
+  .planner-grid{grid-template-columns:repeat(4,1fr)}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Study<span>Mate</span> AI</div>
+  <div class="nav-links">
+    <a href="#features" onclick="showLanding()">Features</a>
+    <a href="#" onclick="showLanding()">Home</a>
+    <button class="btn-cta" onclick="openApp()">Open App</button>
+  </div>
+  <button class="btn-cta" id="nav-app-btn" style="display:none" onclick="showLanding()">← Back</button>
+</nav>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="landing">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="hero-badge">🎓 Built for students</div>
+    <h1>Your personal<br/><em>AI study tutor</em><br/>in your pocket</h1>
+    <p>Understand difficult topics, summarize notes, generate quizzes & flashcards, and stick to a smart study plan — all in one calm, focused app.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openApp('chat')">Try the AI Tutor →</button>
+      <button class="btn-outline" onclick="openApp()">Explore Features</button>
+    </div>
+    <div class="subjects">
+      <span class="subject-pill">📐 Math</span>
+      <span class="subject-pill">🔬 Science</span>
+      <span class="subject-pill">📖 English</span>
+      <span class="subject-pill">⚙️ Engineering</span>
+      <span class="subject-pill">💼 Business</span>
+      <span class="subject-pill">🏛️ History</span>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-eyebrow">Everything you need</div>
+    <div class="section-title">Learn faster with<br/>AI-powered tools</div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📝</div>
+        <h3>Smart Summaries</h3>
+        <p>Paste notes or upload a PDF — get clear bullet summaries instantly. Works on any subject.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <h3>AI Quizzes</h3>
+        <p>Auto-generate MCQs and practice tests on any topic. Test your knowledge before the exam.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💬</div>
+        <h3>AI Tutor Chat</h3>
+        <p>Ask anything and get step-by-step explanations. Like a tutor available 24/7.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🃏</div>
+        <h3>Flashcards</h3>
+        <p>Turn notes into swipeable cards for fast recall. Perfect for vocabulary and key concepts.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📅</div>
+        <h3>Study Planner</h3>
+        <p>Personalized daily plans that fit your schedule. Stay consistent and hit your study goals.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Progress Tracker</h3>
+        <p>Streaks, scores and analytics to stay motivated. See how far you've come.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div style="padding:0 2rem 5rem;max-width:1100px;margin:0 auto">
+    <div class="cta-band">
+      <h2>Start studying smarter today</h2>
+      <p>Free to start. No signup needed — just open and learn.</p>
+      <button class="btn-white" onclick="openApp()">Open StudyMate →</button>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;border-top:1px solid var(--border)">
+    © 2026 StudyMate AI · Learn calmly, achieve more.
+  </footer>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app-view">
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-label">Study Tools</div>
+      <button class="nav-item active" onclick="showPanel('chat',this)"><span class="icon">💬</span> AI Tutor</button>
+      <button class="nav-item" onclick="showPanel('notes',this)"><span class="icon">📝</span> Smart Notes</button>
+      <button class="nav-item" onclick="showPanel('quiz',this)"><span class="icon">🧠</span> Quiz</button>
+      <button class="nav-item" onclick="showPanel('flash',this)"><span class="icon">🃏</span> Flashcards</button>
+      <div class="sidebar-label">Plan & Track</div>
+      <button class="nav-item" onclick="showPanel('planner',this)"><span class="icon">📅</span> Planner</button>
+      <button class="nav-item" onclick="showPanel('progress',this)"><span class="icon">📈</span> Progress</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+      <!-- ── CHAT ── -->
+      <div class="panel active" id="panel-chat">
+        <div class="page-title">AI Tutor 💬</div>
+        <div class="page-sub">Ask anything — get clear, step-by-step explanations.</div>
+        <div class="chat-wrap">
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg ai">
+              <div class="msg-avatar">🤖</div>
+              <div class="msg-bubble">Hi! I'm your AI study tutor. Ask me anything — math problems, essay help, science concepts, or just quiz me on a topic. What are we studying today?</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="chatInput" placeholder="Ask your tutor anything…" rows="2" onkeydown="chatKey(event)"></textarea>
+            <button class="send-btn" onclick="sendChat()">➤</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NOTES ── -->
+      <div class="panel" id="panel-notes">
+        <div class="page-title">Smart Notes 📝</div>
+        <div class="page-sub">Paste notes or upload a PDF to summarize, explain, or generate flashcards.</div>
+
+        <div class="upload-zone" onclick="document.getElementById('pdfInput').click()" id="uploadZone">
+          <div class="uz-icon">📄</div>
+          <p><strong>Click to upload a PDF</strong> or drag & drop</p>
+          <p style="margin-top:0.3rem;font-size:0.8rem">Supports PDF files</p>
+        </div>
+        <input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="handlePDF(event)"/>
+
+        <textarea class="notes-textarea" id="notesText" placeholder="…or paste your notes here directly"></textarea>
+
+        <div class="action-row">
+          <button class="btn-action btn-green" onclick="processNotes('summarize')">📋 Summarize</button>
+          <button class="btn-action btn-orange" onclick="processNotes('explain')">💡 Explain Simply</button>
+          <button class="btn-action btn-blue" onclick="processNotes('flashcards')">🃏 Make Flashcards</button>
+        </div>
+
+        <div id="notesResult" style="display:none" class="result-box">
+          <h4 id="notesResultTitle"></h4>
+          <div id="notesResultBody"></div>
+        </div>
+      </div>
+
+      <!-- ── QUIZ ── -->
+      <div class="panel" id="panel-quiz">
+        <div class="page-title">AI Quiz 🧠</div>
+        <div class="page-sub">Generate practice questions on any topic instantly.</div>
+        <div class="quiz-topic-row">
+          <input class="topic-input" id="quizTopic" placeholder="Enter a topic (e.g. Photosynthesis, World War 2, Algebra…)"/>
+          <button class="btn-action btn-green" onclick="generateQuiz()">Generate Quiz</button>
+        </div>
+        <div id="quizArea"></div>
+      </div>
+
+      <!-- ── FLASHCARDS ── -->
+      <div class="panel" id="panel-flash">
+        <div class="page-title">Flashcards 🃏</div>
+        <div class="page-sub">Click the card to flip. Use arrows to navigate.</div>
+        <div class="flashcard-area">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="fc-front"><p id="fcFront">What is Newton's First Law of Motion?</p></div>
+            <div class="fc-back"><p id="fcBack">An object at rest stays at rest, and an object in motion stays in motion unless acted upon by an external force.</p></div>
+          </div>
+        </div>
+        <div class="fc-hint">Click card to flip</div>
+        <div class="fc-nav">
+          <button onclick="fcNav(-1)">←</button>
+          <span class="fc-count" id="fcCount">1 / 5</span>
+          <button onclick="fcNav(1)">→</button>
+        </div>
+        <hr class="divider"/>
+        <div class="page-sub">Generate flashcards from your notes:</div>
+        <div class="quiz-topic-row">
+          <input class="topic-input" id="flashTopic" placeholder="Topic or paste notes…"/>
+          <button class="btn-action btn-green" onclick="generateFlashcards()">Generate</button>
+        </div>
+      </div>
+
+      <!-- ── PLANNER ── -->
+      <div class="panel" id="panel-planner">
+        <div class="page-title">Study Planner 📅</div>
+        <div class="page-sub">Your personalized weekly plan.</div>
+        <div class="planner-grid" id="plannerGrid"></div>
+        <div class="page-sub">Today's Schedule</div>
+        <div class="planner-list" id="plannerList"></div>
+      </div>
+
+      <!-- ── PROGRESS ── -->
+      <div class="panel" id="panel-progress">
+        <div class="page-title">Progress 📈</div>
+        <div class="page-sub">Track your study streaks and scores.</div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Day Streak 🔥</div></div>
+          <div class="stat-card"><div class="stat-num">84%</div><div class="stat-label">Quiz Average</div></div>
+          <div class="stat-card"><div class="stat-num">47</div><div class="stat-label">Topics Studied</div></div>
+          <div class="stat-card"><div class="stat-num">3.2h</div><div class="stat-label">Avg Daily Study</div></div>
+        </div>
+        <div class="page-sub">This Month's Streak</div>
+        <div class="streak-bar" id="streakBar"></div>
+        <hr class="divider"/>
+        <div class="page-sub">Subject Progress</div>
+        <div id="progressBars"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ── Setup PDF.js ──
+if(typeof pdfjsLib !== 'undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// ── Navigation ──
+function showLanding(){
+  document.getElementById('landing').style.display='block';
+  document.getElementById('app-view').style.display='none';
+  document.getElementById('nav-app-btn').style.display='none';
+  document.querySelector('nav .btn-cta:not(#nav-app-btn)').style.display='';
+}
+function openApp(panel){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('app-view').style.display='block';
+  document.getElementById('nav-app-btn').style.display='block';
+  document.querySelector('nav .btn-cta:not(#nav-app-btn)').style.display='none';
+  if(panel) showPanelByName(panel);
+  initPlanner(); initProgress();
+}
+function showPanel(name, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showPanelByName(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  const btns = document.querySelectorAll('.nav-item');
+  btns.forEach(b=>{ if(b.textContent.toLowerCase().includes(name.toLowerCase().slice(0,4))) b.classList.add('active'); });
+}
+
+// ── Chat ──
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  appendMsg('user', text);
+  input.value = '';
+  const typing = appendTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are a friendly, encouraging AI study tutor. Give clear, structured, step-by-step explanations. Use simple language. Add helpful examples.',
+        messages:[{role:'user',content:text}]
+      })
+    });
+    const data = await res.json();
+    typing.remove();
+    const reply = data.content?.map(c=>c.text||'').join('') || 'Sorry, I could not get a response.';
+    appendMsg('ai', reply);
+  } catch(e){
+    typing.remove();
+    appendMsg('ai','⚠️ Connection error. Please try again.');
+  }
+}
+function appendMsg(role, text){
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  div.innerHTML = `<div class="msg-avatar">${role==='ai'?'🤖':'👤'}</div><div class="msg-bubble">${escHtml(text).replace(/\n/g,'<br/>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function appendTyping(){
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className='msg ai';
+  div.innerHTML=`<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+  return div;
+}
+function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();} }
+
+// ── PDF Upload ──
+async function handlePDF(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const zone = document.getElementById('uploadZone');
+  zone.innerHTML='<div class="loading"><div class="spinner"></div> Reading PDF…</div>';
+  try {
+    const ab = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:ab}).promise;
+    let text='';
+    for(let i=1;i<=pdf.numPages;i++){
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(it=>it.str).join(' ')+'\n';
+    }
+    document.getElementById('notesText').value = text.trim();
+    zone.innerHTML=`<div class="uz-icon">✅</div><p><strong>${file.name}</strong> loaded — ${pdf.numPages} page(s)</p>`;
+  } catch(err){
+    zone.innerHTML=`<div class="uz-icon">⚠️</div><p>Failed to read PDF. Try a text-based PDF or paste notes manually.</p>`;
+    console.error(err);
+  }
+}
+
+// ── Notes Actions ──
+async function processNotes(action){
+  const text = document.getElementById('notesText').value.trim();
+  if(!text){ alert('Please paste your notes or upload a PDF first.'); return; }
+  const result = document.getElementById('notesResult');
+  const title = document.getElementById('notesResultTitle');
+  const body = document.getElementById('notesResultBody');
+  result.style.display='block';
+  title.textContent = action==='summarize'?'📋 Summary':action==='explain'?'💡 Simple Explanation':'🃏 Flashcard Set';
+  body.innerHTML='<div class="loading"><div class="spinner"></div> Generating…</div>';
+  const prompts={
+    summarize:`Summarize these notes into clear bullet points. Be concise.\n\n${text}`,
+    explain:`Explain the following notes in very simple, easy-to-understand language as if explaining to a beginner:\n\n${text}`,
+    flashcards:`Create 6 flashcard pairs (Q&A format) from these notes. Format as:\nQ: ...\nA: ...\n\n${text}`
+  };
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompts[action]}]})
+    });
+    const data = await res.json();
+    const reply = data.content?.map(c=>c.text||'').join('') || 'No response.';
+    body.innerHTML = reply.replace(/\n/g,'<br/>');
+  } catch(e){
+    body.innerHTML='⚠️ Error connecting to AI.';
+  }
+}
+
+// ── Quiz ──
+async function generateQuiz(){
+  const topic = document.getElementById('quizTopic').value.trim();
+  if(!topic){ alert('Enter a topic first.'); return; }
+  const area = document.getElementById('quizArea');
+  area.innerHTML='<div class="loading"><div class="spinner"></div> Generating quiz…</div>';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:1000,
+        messages:[{role:'user',content:`Create 4 multiple choice questions about "${topic}". Return ONLY valid JSON array, no markdown:\n[{"q":"...","options":["A)...","B)...","C)...","D)..."],"answer":0}]`}]
+      })
+    });
+    const data = await res.json();
+    let text = data.content?.map(c=>c.text||'').join('')||'[]';
+    text = text.replace(/```json|```/g,'').trim();
+    const questions = JSON.parse(text);
+    renderQuiz(questions);
+  } catch(e){
+    area.innerHTML='<p style="color:var(--muted)">⚠️ Could not generate quiz. Try a different topic.</p>';
+  }
+}
+function renderQuiz(qs){
+  const area = document.getElementById('quizArea');
+  area.innerHTML = qs.map((q,qi)=>`
+    <div class="quiz-card">
+      <div class="quiz-q">Q${qi+1}. ${escHtml(q.q)}</div>
+      <div class="quiz-options">
+        ${q.options.map((opt,oi)=>`
+          <div class="quiz-opt" onclick="checkAnswer(this,${qi},${oi},${q.answer})">
+            <div class="quiz-opt-letter">${['A','B','C','D'][oi]}</div>
+            ${escHtml(opt.replace(/^[ABCD]\)/,'').trim())}
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+function checkAnswer(el, qi, chosen, correct){
+  const card = el.closest('.quiz-card');
+  card.querySelectorAll('.quiz-opt').forEach((opt,i)=>{
+    opt.style.pointerEvents='none';
+    if(i===correct) opt.classList.add('correct');
+    else if(i===chosen) opt.classList.add('wrong');
+  });
+}
+
+// ── Flashcards ──
+let fcCards=[
+  {q:"What is Newton's First Law?",a:"An object stays at rest or in motion unless acted on by an external force."},
+  {q:"What is Photosynthesis?",a:"The process plants use to convert sunlight, water and CO₂ into glucose and oxygen."},
+  {q:"What is the Pythagorean Theorem?",a:"a² + b² = c², where c is the hypotenuse of a right triangle."},
+  {q:"What is Mitosis?",a:"Cell division producing two genetically identical daughter cells."},
+  {q:"What is Supply and Demand?",a:"A model describing how price is determined by the availability of a product and consumer desire for it."}
+];
+let fcIndex=0;
+function renderFC(){
+  const c=fcCards[fcIndex];
+  document.getElementById('fcFront').textContent=c.q;
+  document.getElementById('fcBack').textContent=c.a;
+  document.getElementById('fcCount').textContent=`${fcIndex+1} / ${fcCards.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard(){ document.getElementById('flashcard').classList.toggle('flipped'); }
+function fcNav(dir){ fcIndex=(fcIndex+dir+fcCards.length)%fcCards.length; renderFC(); }
+async function generateFlashcards(){
+  const topic=document.getElementById('flashTopic').value.trim();
+  if(!topic){alert('Enter a topic first.');return;}
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:`Create 5 flashcard pairs for "${topic}". Return ONLY valid JSON, no markdown:\n[{"q":"...","a":"..."}]`}]})});
+    const data=await res.json();
+    let text=data.content?.map(c=>c.text||'').join('')||'[]';
+    text=text.replace(/```json|```/g,'').trim();
+    fcCards=JSON.parse(text);
+    fcIndex=0; renderFC();
+  }catch(e){alert('Could not generate flashcards.');}
+}
+
+// ── Planner ──
+function initPlanner(){
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const tasks=[['Review Ch.3'],['Math HW'],['Essay Draft'],['Study Group'],['Practice Quiz'],['Revision'],['Rest 😴']];
+  const today=new Date().getDay();
+  const grid=document.getElementById('plannerGrid');
+  grid.innerHTML=days.map((d,i)=>`
+    <div class="day-card ${i===today?'today':''}">
+      <div class="day-name">${d}</div>
+      <div class="day-num">${i===today?'Today':i+1}</div>
+      ${tasks[i].map(t=>`<div class="day-task">${t}</div>`).join('')}
+    </div>`).join('');
+  const colors=['#2d6a4f','#e76f51','#457b9d','#2d6a4f','#e76f51'];
+  const schedule=[
+    {time:'9:00 AM',task:'Math — Calculus Ch.4',done:true,color:colors[0]},
+    {time:'11:00 AM',task:'Physics — Wave Theory',done:true,color:colors[1]},
+    {time:'2:00 PM',task:'English — Essay Outline',done:false,color:colors[2]},
+    {time:'4:00 PM',task:'Chemistry — Revision',done:false,color:colors[3]},
+    {time:'7:00 PM',task:'Practice Quiz — Math',done:false,color:colors[4]},
+  ];
+  document.getElementById('plannerList').innerHTML=schedule.map(s=>`
+    <div class="planner-item">
+      <div class="planner-dot" style="background:${s.color}"></div>
+      <p>${s.task}</p>
+      <span>${s.time}</span>
+      ${s.done?'<span class="done-check">✓</span>':''}
+    </div>`).join('');
+}
+
+// ── Progress ──
+function initProgress(){
+  const bar=document.getElementById('streakBar');
+  const days=['M','T','W','T','F','S','S'];
+  const done=[1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,'today'];
+  bar.innerHTML=done.map((d,i)=>`<div class="streak-day ${d===1?'done':d==='today'?'today':'missed'}">${days[i%7]}</div>`).join('');
+  const subjects=[{name:'Mathematics',pct:82},{name:'Physics',pct:67},{name:'English',pct:91},{name:'Chemistry',pct:58},{name:'History',pct:74}];
+  document.getElementById('progressBars').innerHTML=subjects.map(s=>`
+    <div class="progress-bar-wrap">
+      <label>${s.name} <span>${s.pct}%</span></label>
+      <div class="pbar"><div class="pbar-fill" style="width:${s.pct}%"></div></div>
+    </div>`).join('');
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Drag & drop PDF
+const zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.style.borderColor='var(--accent)'});
+zone.addEventListener('dragleave',()=>{zone.style.borderColor=''});
+zone.addEventListener('drop',e=>{e.preventDefault();zone.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf'){const dt=new DataTransfer();dt.items.add(f);document.getElementById('pdfInput').files=dt.files;handlePDF({target:{files:[f]}});}});
+
+renderFC();
+</script>
+</body>
+</html>
